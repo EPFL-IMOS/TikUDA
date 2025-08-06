@@ -5,7 +5,7 @@ import numpy as np
 
 from losses import *
 
-def training_loop(model, optimizer, source_dl, target_dl, e, epochs,device, adaptation = 'tik'):
+def training_loop(model, optimizer, source_dl, target_dl, e, epochs,device, adaptation = 'fasttikuda'):
     
     train_loss = []
 
@@ -33,6 +33,10 @@ def training_loop(model, optimizer, source_dl, target_dl, e, epochs,device, adap
             loss = F.mse_loss(out_s.squeeze(), label_source) + alpha* TIK_LOSS(feat_s,feat_t,device=device)
         elif(adaptation == 'gram'):
             loss = F.mse_loss(out_s.squeeze(), label_source) + alpha* DARE_GRAM(feat_s,feat_t,device=device)
+        elif(adaptation == 'fasttikuda'):
+            loss = F.mse_loss(out_s.squeeze(), label_source) + alpha* Fast_TikUDA(feat_s,feat_t,device=device)
+        elif(adaptation == 'nothing'):
+            loss = F.mse_loss(out_s.squeeze(), label_source)
         else:
             print('Adaptation loss not implemented')
         
